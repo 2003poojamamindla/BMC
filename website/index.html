@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Telangana Biodiversity Board</title>
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<div class="main">
+
+<div class="navbar">
+<div class="left">
+<img src="logo.jpg" class="logo-img">
+<h2 class="logo">TBMC</h2>
+<img src="telangana.png" class="logo-img1">
+</div>
+
+<div class="nav-right">
+<select class="translate-btn" id="languageSelect" onchange="changeLanguage()">
+<option value="en">English</option>
+<option value="te">తెలుగు</option>
+</select>
+
+<button class="login-header-btn" onclick="openLogin()">Login</button>
+</div>
+</div>
+
+<div class="content">
+<h1 id="mainTitle">TELANGANA BIODIVERSITY BOARD</h1>
+
+<p class="par" id="mainPara">
+Biodiversity Management Committees (BMCs) are statutory bodies under the Biological Diversity Act, 2002.<br>
+Protecting local biodiversity, preserving traditional knowledge, and promoting sustainable use of natural resources.
+</p>
+</div>
+
+</div>
+
+<!-- LOGIN MODAL -->
+<div class="overlay" id="overlay"></div>
+
+<div class="login-modal" id="loginModal">
+
+<h2>Login</h2>
+
+<label>Login Type</label>
+<select id="loginType">
+<option value="state">State Admin</option>
+<option value="district">District User</option>
+</select>
+
+<label>Username</label>
+<input type="text" id="username" class="input-box">
+
+<label>Password</label>
+<input type="password" id="password" class="input-box">
+
+<button class="signin-btn" onclick="login()">Login</button>
+
+<p class="small-link">
+<a href="#" onclick="forgotPassword()">Forgot Password?</a>
+</p>
+
+</div>
+
+<script>
+// ===== DISTRICT USERS =====
+const districtUsers = [
+  { username:"gopinath", phone:"9000000001", districts:["Adilabad","Nirmal","Mancherial","Komaram Bheem"], password:"gopi@123" },
+  { username:"sanjeev", phone:"9000000002", districts:["Karimnagar","Rajanna","Peddapalli","Jagtial","Siddipet"], password:"sanj@123" },
+  { username:"shyam", phone:"9000000003", districts:["Nizamabad","Kamareddy","Rangareddy"], password:"shyam@123" },
+  { username:"lakshmi", phone:"9000000004", districts:["Warangal","Jangaon","Mulugu","Hanumakonda","Mahabubabad"], password:"lak@123" },
+  { username:"srinivas", phone:"9000000005", districts:["Khammam","Bhadradri Kothagudem"], password:"sri@123" },
+  { username:"venkat", phone:"9000000006", districts:["Medak","Sangareddy"], password:"ven@123" },
+  { username:"bharath", phone:"9000000007", districts:["Mahabubnagar","Narayanpet","Jogulamba","Nagarkurnool","Wanaparthy"], password:"bhar@123" },
+  { username:"shravan", phone:"9000000008", districts:["Nalgonda","Suryapet","Yadadri"], password:"shr@123" },
+  { username:"raghu", phone:"9000000009", districts:["Vikarabad","Medchal"], password:"raghu@123" }
+];
+
+localStorage.setItem("districtUsers", JSON.stringify(districtUsers));
+
+// ===== OPEN LOGIN =====
+function openLogin(){
+  overlay.style.display="block";
+  loginModal.classList.add("show");
+}
+
+// ===== LOGIN =====
+function login(){
+  const type = loginType.value;
+  const user = username.value.trim();
+  const pass = password.value;
+
+  // STATE ADMIN LOGIN
+  if(type === "state"){
+    if(user === "stateadmin" && pass === "state@123"){
+      localStorage.setItem("currentUser", JSON.stringify({
+        name:"State Admin",
+        role:"admin",
+        districts:["ALL"]
+      }));
+      window.location.href="bmc.html";
+      return;
+    }
+    alert("Invalid State Admin Login");
+    return;
+  }
+
+  // DISTRICT LOGIN
+  const users = JSON.parse(localStorage.getItem("districtUsers"));
+  const match = users.find(u => u.username === user && u.password === pass);
+
+  if(match){
+    localStorage.setItem("currentUser", JSON.stringify({
+      name: match.username,
+      role:"district",
+      districts: match.districts
+    }));
+    window.location.href="bmc.html";
+    return;
+  }
+
+  alert("Invalid District Username or Password");
+}
+
+// ===== FORGOT PASSWORD (OTP SIMULATION) =====
+function forgotPassword(){
+  const phone = prompt("Enter registered mobile number:");
+  if(!phone) return;
+
+  alert("OTP sent to " + phone + " (Demo)");
+  const newPass = prompt("Enter new password:");
+
+  if(newPass){
+    alert("Password updated (Demo only)");
+  }
+}
+
+// ===== LANGUAGE TRANSLATION =====
+function changeLanguage(){
+  const lang = languageSelect.value;
+
+  if(lang === "te"){
+    mainTitle.innerText = "తెలంగాణ జీవ వైవిధ్య మండలి";
+    mainPara.innerHTML =
+    "జీవ వైవిధ్య నిర్వహణ కమిటీలు (BMCలు) జీవ వైవిధ్య చట్టం, 2002 కింద ఏర్పాటు చేయబడిన చట్టబద్ధ సంస్థలు.<br>" +
+    "స్థానిక జీవ వైవిధ్యాన్ని సంరక్షించడం మరియు సహజ వనరులను రక్షించడం.";
+  } else {
+    mainTitle.innerText = "TELANGANA BIODIVERSITY BOARD";
+    mainPara.innerHTML =
+    "Biodiversity Management Committees (BMCs) are statutory bodies under the Biological Diversity Act, 2002.<br>" +
+    "Protecting local biodiversity and promoting sustainable resource use.";
+  }
+}
+</script>
+
+</body>
+</html>

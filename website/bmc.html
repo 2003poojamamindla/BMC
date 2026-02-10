@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>TBMC Dashboard</title>
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+
+<body>
+
+<div class="app">
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+  <h3><i class="fa-solid fa-leaf"></i> TBMC</h3>
+
+  <a onclick="showSection('bmc')">📋 BMC Data Entry</a>
+  <a onclick="showSection('upload')">🖼 Upload JPG</a>
+  <a class="logout-link" onclick="logout()">🚪 Logout</a>
+</div>
+
+<div class="main-area">
+
+<div class="dash-header">
+  <h2 id="welcomeText">Dashboard</h2>
+  <button class="theme-btn" onclick="toggleTheme()">🌙</button>
+</div>
+
+<div class="dash-content">
+
+<!-- BMC TABLE -->
+<div id="bmc" class="section active">
+
+<h2>BMC Data Entry</h2>
+
+<p><b>Assigned Districts:</b> <span id="myDistricts"></span></p>
+
+<table class="bmc-table">
+<thead>
+<tr>
+<th>S.No</th>
+<th>Name</th>
+<th>Designation</th>
+<th>Contact</th>
+<th>Category</th>
+<th>Gender</th>
+<th>Occupation</th>
+</tr>
+</thead>
+
+<tbody id="bmcBody"></tbody>
+</table>
+
+<button class="primary-btn" onclick="saveBMC()">Save Data</button>
+
+</div>
+
+<!-- UPLOAD -->
+<div id="upload" class="section">
+
+<h3>Upload JPG Documents</h3>
+<input type="file" id="imageUpload" accept="image/jpeg">
+<button class="primary-btn" onclick="uploadImage()">Upload</button>
+
+<div id="uploadedFiles"></div>
+
+</div>
+
+</div>
+</div>
+</div>
+
+<script>
+const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+if(!currentUser) location.href="index.html";
+
+welcomeText.innerText = "Welcome, " + currentUser.name;
+myDistricts.innerText = currentUser.districts.join(", ");
+
+// Generate 7 blank rows
+for(let i=1;i<=7;i++){
+  bmcBody.innerHTML += `
+  <tr>
+    <td>${i}</td>
+    <td><input></td>
+    <td><input></td>
+    <td><input></td>
+    <td><input></td>
+    <td><input></td>
+    <td><input></td>
+  </tr>`;
+}
+
+function showSection(id){
+  document.querySelectorAll(".section").forEach(s => s.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
+}
+
+function saveBMC(){
+  alert("Saved data for districts: " + currentUser.districts.join(", "));
+}
+
+// Upload JPG
+function uploadImage(){
+  const file = imageUpload.files[0];
+  if(!file || file.type !== "image/jpeg"){
+    alert("Upload JPG only");
+    return;
+  }
+
+  const url = URL.createObjectURL(file);
+  uploadedFiles.innerHTML += `
+    <div style="margin-top:10px;">
+      <img src="${url}" width="130">
+      <p>${file.name}</p>
+    </div>`;
+}
+
+function logout(){
+  localStorage.clear();
+  location.href="index.html";
+}
+
+function toggleTheme(){
+  document.body.classList.toggle("dark");
+}
+</script>
+
+</body>
+</html>
